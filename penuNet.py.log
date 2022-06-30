@@ -1,0 +1,23 @@
+
+--- NEW SESSION: 22/06/2022 14:16:40 ---
+/finger1/cavity/SurfacePressureConstraint.volumeGrowth = 3.08959e-06
+
+--- NEW SESSION: 22/06/2022 14:28:23 ---
+/finger1/boxROI.drawBoxes = 1
+/finger1/boxROI.drawPoints = 0
+/finger1/boxROI.drawEdges = 0
+/finger1/boxROISubTopo.drawBoxes = 1
+/finger1/boxROISubTopo.drawPoints = 1
+/finger1/boxROISubTopo.drawEdges = 1
+/finger1/boxROISubTopo.drawTriangles = 1
+/finger1/boxROISubTopo.drawTetrahedra = 1
+/finger1/boxROISubTopo.drawHexahedra = 1
+/finger1/boxROISubTopo.drawQuads = 1
+/finger1/boxROISubTopo.drawSize = 2
+/finger1/boxROI.drawEdges = 1
+/finger1/boxROI.drawTriangles = 1
+/finger1/boxROI.drawTetrahedra = 1
+/finger1/boxROI.drawHexahedra = 1
+/finger1/boxROI.drawQuads = 1
+/finger1/boxROI.drawSize = 2
+/finger1/boxROI.drawPoints = 1
