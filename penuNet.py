@@ -11,14 +11,17 @@ youngModulusStiffLayerFingers = 1500
 poissonRatioFingers = 0.3
 fingersMass = 0.04
 
-radius = 100
-angle1 = 120*math.pi/180  # Angle between 1st and 2nd finger in radian
-angle2 = 240*math.pi/180  # Angle between 1st and 3rd finger in radian
+radius = 70
+angle1 = 90*math.pi/180  # Angle between 1st and 2nd finger in radian
+angle2 = 180*math.pi/180  # Angle between 1st and 3rd finger in radian
+angle3 = 270*math.pi/180  # Angle between 1st and 4rd finger in radian
+
 translateFinger1 = "0 0 0"
 translateFinger2 = "0 " + str(radius + radius*math.sin(angle1-math.pi/2)) + " " + str(radius*math.cos(angle1-math.pi/2))
 translateFinger3 = "0 " + str(radius + radius*math.sin(angle2-math.pi/2)) + " " + str(radius*math.cos(angle2-math.pi/2))
-translations = [translateFinger1, translateFinger2, translateFinger3]
-angles = [0, angle1, angle2]
+translateFinger4 = "0 " + str(radius + radius*math.sin(angle3-math.pi/2)) + " " + str(radius*math.cos(angle3-math.pi/2))
+translations = [translateFinger1, translateFinger2, translateFinger3, translateFinger4]
+angles = [0, angle1, angle2, angle3]
 
 # def disk(parentNode=None, Name="disk",
 #            rotation=[0.0, 0.0, 0.0],
@@ -89,7 +92,7 @@ def createScene(rootNode):
     rootNode.addObject('BruteForceBroadPhase')
     rootNode.addObject('BVHNarrowPhase')
     rootNode.addObject('DefaultContactManager', response='FrictionContact', responseParams='mu=0.6')
-    rootNode.addObject('LocalMinDistance', name='Proximity', alarmDistance=5, contactDistance=1, angleCone=0.0)
+    rootNode.addObject('LocalMinDistance', name='Proximity', alarmDistance=8, contactDistance=3, angleCone=0.0)
 
     rootNode.addObject('BackgroundSetting', color=[0, 0.168627, 0.211765, 1.])
     rootNode.addObject('OglSceneFrame', style='Arrows', alignment='TopRight')
@@ -128,7 +131,7 @@ def createScene(rootNode):
     cubeVisu.addObject('OglModel', name='Visual', src='@loader', color=[0.0, 0.1, 0.5], scale=8)
     cubeVisu.addObject('RigidMapping')
 
-    for i in range(3):
+    for i in range(4):
         ##########################################
         # Finger Model	 						 #
         ##########################################
@@ -136,7 +139,7 @@ def createScene(rootNode):
         finger.addObject('EulerImplicitSolver', name='odesolver', rayleighStiffness=0.1, rayleighMass=0.1)
         finger.addObject('SparseLDLSolver', name='preconditioner')
 
-        finger.addObject('MeshVTKLoader', name='loader', filename='details/data/mesh/mesh_generation/pneunet_0000/body.vtk',
+        finger.addObject('MeshVTKLoader', name='loader', filename='meshes/body0.vtk',
                          rotation=[360 - angles[i] * 180 / math.pi, 0, 0], translation=translations[i])
         finger.addObject('MeshTopology', src='@loader', name='container')
 
@@ -146,7 +149,7 @@ def createScene(rootNode):
                          youngModulus=youngModulusFingers)
 
         finger.addObject('BoxROI', name='boxROI', box=[40, -15, -5, 60, 15, 20], doUpdate=False )
-        finger.addObject('BoxROI', name='boxROISubTopo', box=[-100, 22.5, -8, -19, 28, 8], strict=False)
+        finger.addObject('BoxROI', name='boxROISubTopo', box=[-60, -4, -20, 60, 0, 20], strict=False, drawBoxes =False, drawSize = 1) #
         if i == 0:
             finger.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12,
                              angularStiffness=1e12)
@@ -157,7 +160,7 @@ def createScene(rootNode):
         finger.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
 
         ##########################################
-        # Sub topology						   #
+        # Sub topology						   #      #tetrahedric tology error
         ##########################################
         modelSubTopo = finger.addChild('modelSubTopo')
         if i == 0:
@@ -173,7 +176,7 @@ def createScene(rootNode):
         # Constraint							 #
         ##########################################
         cavity = finger.addChild('cavity')
-        cavity.addObject('MeshSTLLoader', name='loader', filename='details/data/mesh/mesh_generation/pneunet_0000/cavity.stl',
+        cavity.addObject('MeshSTLLoader', name='loader', filename='meshes/cavity0.stl',
                          translation=translations[i], rotation=[360 - angles[i] * 180 / math.pi, 0, 0])
         cavity.addObject('MeshTopology', src='@loader', name='topo')
         cavity.addObject('MechanicalObject', name='cavity')
@@ -186,7 +189,7 @@ def createScene(rootNode):
         ##########################################
 
         collisionFinger = finger.addChild('collisionFinger')
-        collisionFinger.addObject('MeshSTLLoader', name='loader', filename='details/data/mesh/mesh_generation/pneunet_0000/collision.stl',
+        collisionFinger.addObject('MeshSTLLoader', name='loader', filename='meshes/collision0.stl',
                                   translation=translations[i], rotation=[360 - angles[i] * 180 / math.pi, 0, 0])
         collisionFinger.addObject('MeshTopology', src='@loader', name='topo')
         collisionFinger.addObject('MechanicalObject', name='collisMech')
@@ -199,7 +202,7 @@ def createScene(rootNode):
         # Visualization						  #
         ##########################################
         modelVisu = finger.addChild('visu')
-        modelVisu.addObject('MeshVTKLoader', name='loader', filename='details/data/mesh/mesh_generation/pneunet_0000/body.vtk')
+        modelVisu.addObject('MeshGmshLoader', name='loader', filename='meshes/body0.msh')
         modelVisu.addObject('OglModel', src='@loader', color=[0.7, 0.7, 0.7, 0.6], translation=translations[i],
                             rotation=[360 - angles[i] * 180 / math.pi, 0, 0])
         modelVisu.addObject('BarycentricMapping')
